@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>বাকি হিসাব App</title>
+<style>body{font-family:sans-serif;max-width:600px;margin:auto;padding:1rem;}input,button{padding:.5rem;margin:.3rem 0;width:100%;}table{width:100%;border-collapse:collapse;margin-top:1rem;}th,td{border:1px solid #aaa;padding:.5rem;text-align:left;}</style>
+</head><body>
+<h2>বাকি হিসাব App</h2>
+<label>Customer Name:</label><input id="name" placeholder="নাম লিখুন">
+<label>Amount (BDT):</label><input id="amount" type="number" placeholder="টাকা লিখুন">
+<label>Date:</label><input id="date" type="date">
+<label>Remarks:</label><input id="remarks" placeholder="মন্তব্য লিখুন">
+<button id="addBtn">Add Entry</button><button id="clearBtn">Clear All</button>
+<table id="ledger"><thead><tr><th>নাম</th><th>তারিখ</th><th>টাকা</th><th>মন্তব্য</th></tr></thead><tbody></tbody></table>
+<script>
+const ledger = document.getElementById('ledger').querySelector('tbody');
+const entries = JSON.parse(localStorage.getItem('entries')||'[]');
+function save(){localStorage.setItem('entries',JSON.stringify(entries))}
+function render(){ledger.innerHTML='';entries.forEach(e=>{const row=document.createElement('tr');['name','date','amount','remarks'].forEach(k=>{const td=document.createElement('td');td.textContent=e[k];row.appendChild(td)});ledger.appendChild(row)})}
+document.getElementById('addBtn').onclick=()=>{
+ const e={name:document.getElementById('name').value.trim(),amount:document.getElementById('amount').value,date:document.getElementById('date').value,remarks:document.getElementById('remarks').value.trim()};
+ if(!e.name||!e.amount||!e.date){alert('নাম, টাকা ও তারিখ দিন');return;}
+ entries.push(e);save();render();['name','amount','date','remarks'].forEach(id=>document.getElementById(id).value='')
+};
+document.getElementById('clearBtn').onclick=()=>{
+ if(confirm('সব মুছে ফেলবেন?')){entries.splice(0);save();render()}
+};
+render();
+</script>
+</body></html>
